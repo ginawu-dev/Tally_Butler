@@ -3,105 +3,653 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tally Butler Support</title>
+  <title>Tally Butler — Private Expense Tracker Without Bank Connection</title>
+  <meta name="description" content="Tally Butler is a private expense tracker and personal bookkeeping app for iPhone. Track income, expenses, recurring transactions, and reminders without connecting a bank account.">
+  <meta property="og:title" content="Tally Butler — Private Expense Tracker Without Bank Connection">
+  <meta property="og:description" content="A simple private way to track money without connecting your bank account.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Tally Butler">
   <style>
+    :root {
+      --bg: #f3f6fb;
+      --panel: #ffffff;
+      --panel-alt: #eef4ff;
+      --text: #1b2430;
+      --muted: #58657a;
+      --primary: #1d6ef2;
+      --primary-dark: #114bb8;
+      --border: rgba(27, 36, 48, 0.08);
+      --accent: #e9f3ff;
+      --success: #1e7a60;
+      --shadow: 0 18px 40px rgba(21, 41, 74, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f7;
-      color: #1d1d1f;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
 
-    main {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 48px 24px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 32px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.08);
-    }
-
-    h1 {
-      margin-top: 0;
-      color: #087cff;
-    }
-
-    h2 {
-      margin-top: 32px;
+    img {
+      max-width: 100%;
+      display: block;
     }
 
     a {
-      color: #087cff;
+      color: var(--primary);
+      text-decoration: none;
     }
 
-    footer {
-      margin-top: 32px;
-      color: #777;
-      font-size: 14px;
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(243, 246, 251, 0.85);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      gap: 16px;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      font-size: 1.15rem;
+    }
+
+    .brand span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 0.96rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .hero {
+      padding: 72px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.7rem, 5vw, 4.3rem);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+    }
+
+    .hero-subtitle {
+      margin: 18px 0 16px;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      line-height: 1.25;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 62ch;
+      font-size: 1.08rem;
+      color: var(--muted);
+      margin: 0 0 24px;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .button:hover {
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--primary), #4f8ef7);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(29, 110, 242, 0.24);
+    }
+
+    .button.secondary {
+      background: var(--panel);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .feature-pills li {
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .card-preview {
+      background: linear-gradient(180deg, #ffffff 0%, #edf4ff 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .statement {
+      display: grid;
+      gap: 16px;
+    }
+
+    .mini-stat {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .mini-stat span {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .section {
+      padding: 72px 0;
+    }
+
+    .section.alt {
+      background: rgba(255,255,255,0.4);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 3vw, 2.7rem);
+      line-height: 1.1;
+      letter-spacing: -0.06em;
+    }
+
+    .section-header p {
+      margin: 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 1.03rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .feature-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px 18px;
+      box-shadow: 0 8px 20px rgba(17, 47, 84, 0.03);
+    }
+
+    .feature-item h3 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+      letter-spacing: -0.03em;
+    }
+
+    .feature-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+
+    .narrow {
+      max-width: 760px;
+    }
+
+    .privacy-list,
+    .support-list {
+      margin: 22px 0 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+    }
+
+    .privacy-list li,
+    .support-list li {
+      margin-bottom: 0.7rem;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    details {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details p {
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+
+    .support-contact {
+      margin: 18px 0 22px;
+      padding: 18px 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 22px 0 36px;
+      color: var(--muted);
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 900px) {
+      .feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        flex-direction: column;
+        justify-content: center;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      .section {
+        padding: 56px 0;
+      }
+
+      .hero {
+        padding-top: 48px;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <section class="card">
-      <h1>Tally Butler Support</h1>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top"><span>Tally</span> Butler</a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#why">Why Tally Butler</a>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#faq">FAQ</a>
+        <a href="#support">Support</a>
+      </nav>
+    </div>
+  </header>
 
-      <p>
-        Welcome to Tally Butler support. Tally Butler helps you record income
-        and expenses, manage recurring transactions, set reminders, and
-        understand your financial activity.
-      </p>
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Private Expense Tracker &amp; Personal Bookkeeping App</p>
+          <h1>Tally Butler</h1>
+          <p class="hero-subtitle">Private Expense Tracking, Without the Bank Connection</p>
+          <p class="lead">
+            Tally Butler is an iPhone personal finance app for people who prefer to record and understand their finances without linking a bank account. It offers a simple, private way to track income, expenses, recurring transactions, reminders, and everyday financial activity.
+          </p>
 
-      <h2>Need help?</h2>
-      <p>
-        If you have a question or encounter a problem, please email us:
-      </p>
+          <div class="cta-row">
+            <a class="button primary" href="#features">Explore features</a>
+            <a class="button secondary" href="privacy.html">Privacy policy</a>
+          </div>
 
-      <p>
-        <a href="mailto:support@yourdomain.com">
-          ginawuwriter@outlook.com
-        </a>
-      </p>
+          <ul class="feature-pills" aria-label="Key product qualities">
+            <li>No Ads</li>
+            <li>No Bank Connection</li>
+            <li>Private</li>
+            <li>Simple</li>
+          </ul>
+        </div>
 
-      <h2>Common questions</h2>
+        <div class="card-preview" aria-label="App overview summary">
+          <div class="statement">
+            <div class="mini-stat">
+              <strong>Income</strong>
+              <span>Track what comes in</span>
+            </div>
+            <div class="mini-stat">
+              <strong>Expenses</strong>
+              <span>Track what goes out</span>
+            </div>
+            <div class="mini-stat">
+              <strong>Recurring</strong>
+              <span>Keep regular payments in view</span>
+            </div>
+            <div class="mini-stat">
+              <strong>Insights</strong>
+              <span>Understand your financial picture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <h3>How do I restore my subscription?</h3>
-      <p>
-        Open Tally Butler, go to Settings, select Unlock Pro, and tap
-        Restore Purchases.
-      </p>
+    <section id="why" class="section alt">
+      <div class="container narrow">
+        <div class="section-header">
+          <h2>Why Tally Butler</h2>
+        </div>
+        <p class="lead">
+          Many finance apps rely on bank connections, advertising, or complex budgeting systems. Tally Butler is designed for people who prefer a simpler manual approach and want control over what they record. It is a practical tool for personal bookkeeping without unnecessary complexity.
+        </p>
+      </div>
+    </section>
 
-      <h3>How do I change my currency?</h3>
-      <p>
-        Open Settings, select Main Currency, and choose your preferred
-        currency.
-      </p>
+    <section id="features" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Features</h2>
+        </div>
 
-      <h3>How do I export my data?</h3>
-      <p>
-        Open Settings and select Export Transactions as CSV.
-      </p>
+        <div class="feature-grid">
+          <article class="feature-item">
+            <h3>Income &amp; Expense Tracking</h3>
+            <p>Record income and spending in a straightforward way that fits everyday personal bookkeeping.</p>
+          </article>
 
-      <h3>How does iCloud sync work?</h3>
-      <p>
-        When enabled, your records sync through your private iCloud
-        database associated with your Apple Account.
-      </p>
+          <article class="feature-item">
+            <h3>Recurring Transactions</h3>
+            <p>Track regular bills, subscriptions, and recurring payments so they are easier to manage.</p>
+          </article>
 
-      <h2>Privacy</h2>
-      <p>
-        Tally Butler is designed to keep your bookkeeping data private.
-        You can export your records whenever you need.
-      </p>
+          <article class="feature-item">
+            <h3>Reminders</h3>
+            <p>Set reminders to help keep important financial tasks visible and on schedule.</p>
+          </article>
 
-      <footer>
-        © 2026 Tally Butler. All rights reserved.
-      </footer>
+          <article class="feature-item">
+            <h3>Financial Insights</h3>
+            <p>Review your financial activity to better understand patterns in your spending and income.</p>
+          </article>
+
+          <article class="feature-item">
+            <h3>Multiple Profiles</h3>
+            <p>Manage more than one personal or household profile within the app.</p>
+          </article>
+
+          <article class="feature-item">
+            <h3>Multiple Currencies</h3>
+            <p>Work with more than one currency when tracking records across different needs or contexts.</p>
+          </article>
+
+          <article class="feature-item">
+            <h3>CSV Import &amp; Export</h3>
+            <p>Import and export your own data in CSV format for personal backup and transfer.</p>
+          </article>
+
+          <article class="feature-item">
+            <h3>Optional iCloud Sync</h3>
+            <p>Use iCloud sync when you want a convenient way to keep records available across devices.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacy" class="section alt">
+      <div class="container narrow">
+        <div class="section-header">
+          <h2>Privacy</h2>
+        </div>
+        <p class="lead">
+          Tally Butler is built around a simple idea: users decide what they record and when. The app does not require a bank connection, there are no ads, and your financial information stays under your control.
+        </p>
+        <ul class="privacy-list">
+          <li>No bank connection required.</li>
+          <li>No advertising.</li>
+          <li>Users manually control what financial information they record.</li>
+          <li>Optional iCloud sync is available when you choose to use it.</li>
+        </ul>
+        <p><a href="privacy.html">Read the privacy policy</a>.</p>
+      </div>
+    </section>
+
+    <section id="who" class="section">
+      <div class="container narrow">
+        <div class="section-header">
+          <h2>Who it's for</h2>
+        </div>
+        <p class="lead">
+          Tally Butler may suit people who prefer manual expense tracking, do not want to connect financial accounts to a budgeting app, want a simple personal bookkeeping tool, manage more than one profile, work with multiple currencies, or want to export their own records.
+        </p>
+      </div>
+    </section>
+
+    <section id="faq" class="section alt">
+      <div class="container narrow">
+        <div class="section-header">
+          <h2>FAQ</h2>
+        </div>
+
+        <div class="faq-list">
+          <details open>
+            <summary>Is there an expense tracker that doesn't connect to my bank?</summary>
+            <p>Yes. Tally Butler is designed for manual expense tracking and does not require a bank connection.</p>
+          </details>
+
+          <details>
+            <summary>Can I manually track expenses on iPhone?</summary>
+            <p>Yes. Tally Butler is an iPhone app for manual income and expense tracking.</p>
+          </details>
+
+          <details>
+            <summary>Does Tally Butler require a bank account connection?</summary>
+            <p>No. Tally Butler does not require a bank connection.</p>
+          </details>
+
+          <details>
+            <summary>Does Tally Butler contain ads?</summary>
+            <p>No. Tally Butler does not include advertising.</p>
+          </details>
+
+          <details>
+            <summary>Can I track both income and expenses?</summary>
+            <p>Yes. Tally Butler supports manual income and expense tracking.</p>
+          </details>
+
+          <details>
+            <summary>Can I track recurring transactions?</summary>
+            <p>Yes. Recurring transactions are supported.</p>
+          </details>
+
+          <details>
+            <summary>Does Tally Butler support multiple currencies?</summary>
+            <p>Yes. Tally Butler supports multiple currencies.</p>
+          </details>
+
+          <details>
+            <summary>Can I export my expense data?</summary>
+            <p>Yes. Tally Butler supports CSV import and export.</p>
+          </details>
+
+          <details>
+            <summary>Does Tally Butler support iCloud sync?</summary>
+            <p>Yes. Optional iCloud sync is available.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="support" class="section">
+      <div class="container narrow">
+        <div class="section-header">
+          <h2>Support</h2>
+        </div>
+
+        <p>If you have a question or need help, please email us:</p>
+        <div class="support-contact">
+          <a href="mailto:ginawuwriter@outlook.com">ginawuwriter@outlook.com</a>
+        </div>
+
+        <h3>Common questions</h3>
+        <ul class="support-list">
+          <li><strong>How do I restore my subscription?</strong> Open Tally Butler, go to Settings, select Unlock Pro, and tap Restore Purchases.</li>
+          <li><strong>How do I change my currency?</strong> Open Settings, select Main Currency, and choose your preferred currency.</li>
+          <li><strong>How do I export my data?</strong> Open Settings and select Export Transactions as CSV.</li>
+          <li><strong>How does iCloud sync work?</strong> When enabled, your records sync through your private iCloud database associated with your Apple Account.</li>
+        </ul>
+      </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <div>© 2026 Tally Butler. Private expense tracking for iPhone.</div>
+      <div class="footer-links">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="#support">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Tally Butler",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "iOS",
+    "description": "Tally Butler is a private expense tracker and personal bookkeeping app for iPhone. It supports manual income and expense tracking, recurring transactions, reminders, multiple profiles, multiple currencies, CSV import and export, and optional iCloud sync without requiring a bank connection.",
+    "featureList": [
+      "Manual income and expense tracking",
+      "Recurring transactions",
+      "Reminders",
+      "Financial insights",
+      "Multiple profiles",
+      "Multiple currencies",
+      "CSV import and export",
+      "Optional iCloud sync",
+      "No bank connection required"
+    ]
+  }
+  </script>
 </body>
 </html>
+
